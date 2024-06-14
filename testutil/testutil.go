@@ -29,11 +29,12 @@ func AwaitCondition(cond util.Condition, period time.Duration, maxWait time.Dura
 // run are ready.d
 func WaitForPort(t *testing.T, port int) error {
 	err := AwaitCondition(func() bool {
-		conn, err := net.Dial("tcp", "localhost:"+strconv.Itoa(port))
-		if err != nil {
+		conn, _ := net.Dial("tcp", "localhost:"+strconv.Itoa(port))
+		if conn != nil {
 			conn.Close()
+			return true
 		}
-		return err != nil
+		return false
 	}, 500*time.Millisecond, 60*time.Second)
 	return err
 }
